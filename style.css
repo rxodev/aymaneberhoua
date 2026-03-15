@@ -330,7 +330,7 @@ h4 {
   border-color: var(--accent);
 }
 
-/* Hamburger — hidden on desktop */
+/* Hamburger */
 .nav-toggle {
   display: none;
   flex-direction: column;
@@ -654,6 +654,122 @@ h4 {
   margin-left: 2px;
 }
 
+/* ─── INTERESTS ROW ─────────────────────────── */
+.interests-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+.interest-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+  transition:
+    border-color var(--transition),
+    transform var(--transition);
+}
+.interest-chip:hover {
+  border-color: var(--border2);
+  transform: translateY(-2px);
+}
+.interest-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  background: rgba(40, 116, 204, 0.08);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.interest-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.interest-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.interest-val {
+  font-size: 12.5px;
+  color: var(--text);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* ─── STOIC QUOTE ───────────────────────────── */
+.stoic-quote {
+  margin-top: 2rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  position: relative;
+}
+.stoic-inner {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+.stoic-portrait {
+  width: 72px;
+  height: 72px;
+  min-width: 72px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  object-position: top center;
+  border: 1px solid var(--border2);
+  filter: grayscale(30%) sepia(20%);
+  transition: filter var(--transition);
+}
+.stoic-portrait:hover {
+  filter: grayscale(0%) sepia(10%);
+}
+.stoic-body {
+  position: relative;
+  flex: 1;
+}
+.stoic-mark {
+  font-family: var(--display);
+  font-size: 48px;
+  line-height: 0.6;
+  color: var(--accent);
+  opacity: 0.3;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+.stoic-text {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  font-style: italic;
+  line-height: 1.7;
+  margin-bottom: 0.5rem;
+  padding-left: 1.25rem;
+}
+.stoic-attr {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent-light);
+  letter-spacing: 0.05em;
+  padding-left: 1.25rem;
+  display: block;
+}
+
+/* ─── STATS GRID ────────────────────────────── */
 .about-stats {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -713,6 +829,21 @@ h4 {
   border-color: var(--border2);
   transform: translateY(-3px);
   box-shadow: var(--shadow-blue);
+}
+/* AI skill card gets a subtle glow accent */
+.skill-item-ai {
+  border-color: rgba(40, 116, 204, 0.25);
+  background: linear-gradient(
+    135deg,
+    var(--bg-card) 80%,
+    rgba(40, 116, 204, 0.06)
+  );
+}
+.skill-item-ai:hover {
+  border-color: var(--accent-light);
+  box-shadow:
+    0 0 0 1px var(--accent-light),
+    0 8px 32px rgba(74, 158, 255, 0.18);
 }
 .skill-top {
   display: flex;
@@ -961,28 +1092,36 @@ h4 {
   background: rgba(40, 116, 204, 0.07);
   white-space: nowrap;
 }
-.gallery-grid {
+
+/* ── Uniform gallery grid: every item identical ── */
+.gallery-grid,
+.gallery-samsung {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
 }
-.gallery-wide {
-  grid-column: span 2;
-}
+
+/* Remove any spanning — all cells are equal */
+.gallery-wide,
 .gallery-tall {
-  grid-row: span 2;
+  grid-column: unset;
+  grid-row: unset;
 }
+
 .gallery-item {
   position: relative;
   overflow: hidden;
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
   background: var(--bg-card);
+  aspect-ratio: 4/3; /* identical ratio for every card */
+}
+
+/* tall override no longer needed — neutralise it */
+.gallery-item.gallery-tall {
   aspect-ratio: 4/3;
 }
-.gallery-item.gallery-tall {
-  aspect-ratio: unset;
-}
+
 .gallery-item img {
   width: 100%;
   height: 100%;
@@ -1235,11 +1374,15 @@ h4 {
   .ach-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  .gallery-grid {
-    grid-template-columns: 1fr 1fr;
+  .gallery-grid,
+  .gallery-samsung {
+    grid-template-columns: repeat(2, 1fr);
   }
-  .gallery-wide {
-    grid-column: span 2;
+  /* ensure no spanning on tablet either */
+  .gallery-wide,
+  .gallery-tall {
+    grid-column: unset;
+    grid-row: unset;
   }
   .connect-layout {
     grid-template-columns: 1fr;
@@ -1247,6 +1390,9 @@ h4 {
   }
   .connect-panel {
     display: none;
+  }
+  .interests-row {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -1289,7 +1435,7 @@ h4 {
     color: var(--text) !important;
   }
 
-  /* Hero — photo first, centered */
+  /* Hero */
   .hero {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto;
@@ -1353,6 +1499,9 @@ h4 {
   .about-stats {
     grid-template-columns: 1fr 1fr;
   }
+  .interests-row {
+    grid-template-columns: 1fr;
+  }
 
   /* Skills */
   .skills-grid {
@@ -1375,19 +1524,17 @@ h4 {
     grid-template-columns: 1fr;
   }
 
-  /* Gallery */
-  .gallery-grid {
+  /* Gallery — single column, all equal */
+  .gallery-grid,
+  .gallery-samsung {
     grid-template-columns: 1fr;
   }
-  .gallery-wide {
-    grid-column: span 1;
-  }
+  .gallery-wide,
   .gallery-tall {
-    grid-row: span 1;
+    grid-column: unset;
+    grid-row: unset;
   }
-  .gallery-item {
-    aspect-ratio: 16/9;
-  }
+  .gallery-item,
   .gallery-item.gallery-tall {
     aspect-ratio: 16/9;
   }
@@ -1437,6 +1584,9 @@ h4 {
     font-size: clamp(46px, 13vw, 64px);
   }
   .about-stats {
+    grid-template-columns: 1fr;
+  }
+  .interests-row {
     grid-template-columns: 1fr;
   }
 }
