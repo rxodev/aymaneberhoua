@@ -4,6 +4,98 @@
    ═══════════════════════════════════════════════ */
 
 document.addEventListener("DOMContentLoaded", () => {
+  /* ─── FLOATING SQUARES BACKGROUND ──────────────── */
+  const sqCanvas = document.getElementById("squares-canvas");
+  if (sqCanvas) {
+    const sqCtx = sqCanvas.getContext("2d");
+
+    function resizeSqCanvas() {
+      sqCanvas.width = window.innerWidth;
+      sqCanvas.height = window.innerHeight;
+    }
+    resizeSqCanvas();
+    window.addEventListener("resize", resizeSqCanvas, { passive: true });
+
+    const BLUE1 = "rgba(40, 116, 204,";
+    const BLUE2 = "rgba(74, 158, 255,";
+
+    // Fewer squares on mobile for performance
+    const isMobile = window.innerWidth < 768;
+    const SQUARE_COUNT = isMobile ? 14 : 28;
+
+    function makeSquare() {
+      return {
+        x: Math.random(),
+        y: Math.random(),
+        size: 14 + Math.random() * 52,
+        speedY: 0.00008 + Math.random() * 0.00022,
+        driftX: (Math.random() - 0.5) * 0.00012,
+        opacity: 0.03 + Math.random() * 0.1,
+        rotation: Math.random() * Math.PI * 2,
+        rotSpeed: (Math.random() - 0.5) * 0.004,
+        filled: Math.random() > 0.5,
+        color: Math.random() > 0.5 ? BLUE1 : BLUE2,
+      };
+    }
+
+    const squares = Array.from({ length: SQUARE_COUNT }, makeSquare);
+
+    let sqLast = 0;
+    let animationId;
+
+    function animateSq(ts) {
+      const dt = Math.min(ts - sqLast, 50); // cap dt so tab-switch doesn't jump
+      sqLast = ts;
+      sqCtx.clearRect(0, 0, sqCanvas.width, sqCanvas.height);
+
+      for (const s of squares) {
+        s.y -= s.speedY * dt;
+        s.x += s.driftX * dt;
+        s.rotation += s.rotSpeed;
+
+        // wrap around edges
+        if (s.y < -0.12) {
+          s.y = 1.12;
+          s.x = Math.random();
+        }
+        if (s.x < -0.12) s.x = 1.12;
+        if (s.x > 1.12) s.x = -0.12;
+
+        const cx = s.x * sqCanvas.width;
+        const cy = s.y * sqCanvas.height;
+
+        sqCtx.save();
+        sqCtx.translate(cx, cy);
+        sqCtx.rotate(s.rotation);
+
+        if (s.filled) {
+          sqCtx.fillStyle = s.color + s.opacity + ")";
+          sqCtx.fillRect(-s.size / 2, -s.size / 2, s.size, s.size);
+        } else {
+          sqCtx.strokeStyle = s.color + s.opacity + ")";
+          sqCtx.lineWidth = 1;
+          sqCtx.strokeRect(-s.size / 2, -s.size / 2, s.size, s.size);
+        }
+
+        sqCtx.restore();
+      }
+
+      animationId = requestAnimationFrame(animateSq);
+    }
+
+    // Pause animation when tab is hidden (saves battery/CPU)
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        cancelAnimationFrame(animationId);
+      } else {
+        sqLast = 0;
+        animationId = requestAnimationFrame(animateSq);
+      }
+    });
+
+    animationId = requestAnimationFrame(animateSq);
+  }
+
   /* ─── CUSTOM CURSOR ─────────────────────────── */
   const cursor = document.getElementById("cursor");
   const cursorTrail = document.getElementById("cursor-trail");
