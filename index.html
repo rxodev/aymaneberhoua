@@ -9,7 +9,7 @@
     <link rel="apple-touch-icon" href="faviconab.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap"
       rel="stylesheet"
     />
     <link
@@ -17,15 +17,49 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
+    <!-- Theme: must run before paint to prevent flash -->
+    <script>
+      (function () {
+        const s = localStorage.getItem("ab-theme");
+        if (s === "light")
+          document.documentElement.setAttribute("data-theme", "light");
+      })();
+    </script>
   </head>
   <body>
-    <!-- ─── FLOATING SQUARES CANVAS ──────────────── -->
-    <canvas id="squares-canvas"></canvas>
+    <!-- SCROLL PROGRESS BAR -->
+    <div id="scroll-progress" aria-hidden="true"></div>
+
+    <!-- BOOT SCREEN -->
+    <div id="boot-screen" role="status" aria-label="Loading portfolio">
+      <div class="boot-logo"><span>[</span>AB<span>]</span>&nbsp;aymane_os</div>
+      <div class="boot-log"></div>
+      <div class="boot-progress-wrap">
+        <div class="boot-progress-label">
+          <span>initializing aymane_os v3.0</span>
+          <span class="boot-bar-pct">0%</span>
+        </div>
+        <div class="boot-progress-track">
+          <div class="boot-bar-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scanlines" aria-hidden="true"></div>
+    <div class="crt-vignette" aria-hidden="true"></div>
+    <canvas id="squares-canvas" aria-hidden="true"></canvas>
 
     <div class="cursor" id="cursor"></div>
     <div class="cursor-trail" id="cursor-trail"></div>
 
-    <!-- ─── NAV ─────────────────────────────────────── -->
+    <!-- SYSTEM LOG TICKER -->
+    <div class="syslog-bar" id="syslog-bar" aria-hidden="true">
+      <span class="syslog-prefix">[SYS]</span>
+      <span class="syslog-text" id="syslog-text"></span>
+      <span class="syslog-blink">▮</span>
+    </div>
+
+    <!-- NAV -->
     <header class="nav" id="nav">
       <a href="#" class="nav-logo">
         <span class="logo-bracket">[</span>AB<span class="logo-bracket">]</span>
@@ -45,71 +79,132 @@
         <a href="#skills" class="nav-link"
           ><span class="nav-num">02</span>skills</a
         >
+        <a href="#projects" class="nav-link"
+          ><span class="nav-num">03</span>projects</a
+        >
         <a href="#experience" class="nav-link"
-          ><span class="nav-num">03</span>experience</a
+          ><span class="nav-num">04</span>experience</a
         >
         <a href="#achievements" class="nav-link"
-          ><span class="nav-num">04</span>achievements</a
+          ><span class="nav-num">05</span>achievements</a
         >
         <a href="#gallery" class="nav-link"
-          ><span class="nav-num">05</span>gallery</a
+          ><span class="nav-num">06</span>gallery</a
         >
-        <a href="#connect" class="nav-link nav-cta">connect →</a>
+        <div class="nav-actions">
+          <button
+            id="theme-toggle"
+            class="theme-toggle-btn"
+            aria-label="Switch to light mode"
+            title="Toggle dark / light mode"
+          ></button>
+          <a href="#connect" class="nav-link nav-cta">connect →</a>
+        </div>
       </nav>
       <div class="nav-backdrop" id="nav-backdrop"></div>
     </header>
 
-    <!-- ─── HERO ─────────────────────────────────────── -->
+    <!-- HERO -->
     <section class="hero" id="hero">
       <div class="hero-grid-overlay" aria-hidden="true"></div>
       <div class="hero-left">
         <div class="hero-status">
           <span class="status-dot"></span>
-          <span>Available for opportunities · Casablanca, MA</span>
+          <span class="status-text">
+            <span id="uptime-label">system online</span>
+            &nbsp;·&nbsp;<span id="uptime-counter" class="mono">00:00:00</span>
+            &nbsp;·&nbsp;Casablanca, MA
+          </span>
         </div>
-        <h1 class="hero-name">
+
+        <h1 class="hero-name" id="hero-name">
           <span class="hero-name-line" data-reveal>Aymane</span>
           <span class="hero-name-line hero-name-blue" data-reveal>Berhoua</span>
         </h1>
-        <p class="hero-tagline" data-reveal>
-          High school developer building things that actually work. Python ·
-          CS50 · Godot · AI · STEM.
-        </p>
-        <div class="hero-code" data-reveal>
-          <span class="code-comment">// my philosophy</span><br />
-          <span class="code-kw">while</span>(<span class="code-var">age</span>++
-          &lt; <span class="code-str">life.length</span>) {<br />
-          &nbsp;&nbsp;++<span class="code-var">knowledge</span>;<br />
-          }
+
+        <div class="hero-typewriter" data-reveal>
+          <span class="tw-prefix">$ identify --role </span
+          ><span class="tw-text" id="tw-text"></span
+          ><span class="tw-cursor">█</span>
         </div>
+
+        <p class="hero-tagline" data-reveal>
+          High school developer building things that actually work.<br />
+          Python · CS50 · Godot · AI · STEM.
+        </p>
+
+        <div class="hero-code" data-reveal>
+          <div class="hcode-bar">
+            <span class="hcode-dot r"></span><span class="hcode-dot y"></span
+            ><span class="hcode-dot g"></span>
+            <span class="hcode-title">philosophy.py</span>
+          </div>
+          <div class="hcode-body">
+            <span class="code-comment"># my philosophy</span><br />
+            <span class="code-kw">while</span>(<span class="code-var">age</span
+            >++ &lt; <span class="code-str">life.length</span>) {<br />
+            &nbsp;&nbsp;++<span class="code-var">knowledge</span>;<br />
+            }
+          </div>
+        </div>
+
         <div class="hero-actions" data-reveal>
-          <a href="#achievements" class="btn btn-primary">View achievements</a>
-          <a href="#connect" class="btn btn-outline">Get in touch</a>
+          <a href="#projects" class="btn btn-primary"
+            ><span class="btn-prompt">$</span> view_projects</a
+          >
+          <a href="#achievements" class="btn btn-outline"
+            ><span class="btn-prompt">&gt;</span> achievements</a
+          >
+          <a href="#connect" class="btn btn-ghost"
+            ><span class="btn-prompt">~</span> get_in_touch</a
+          >
         </div>
       </div>
+
       <div class="hero-right">
         <div class="hero-photo-frame">
+          <div class="photo-scanlines"></div>
           <img
             src="pfp_img.png"
             alt="Aymane Berhoua"
             class="hero-photo"
             loading="eager"
           />
-          <div class="hero-photo-border"></div>
+          <div class="photo-terminal-overlay">
+            <div class="pto-line">
+              <span class="pto-key">name</span><span class="pto-sep">:</span
+              ><span class="pto-val">aymane_berhoua</span>
+            </div>
+            <div class="pto-line">
+              <span class="pto-key">loc &nbsp;</span
+              ><span class="pto-sep">:</span
+              ><span class="pto-val">casablanca_ma</span>
+            </div>
+            <div class="pto-line">
+              <span class="pto-key">role</span><span class="pto-sep">:</span
+              ><span class="pto-val">dev_in_progress</span>
+            </div>
+            <div class="pto-line">
+              <span class="pto-key">stat</span><span class="pto-sep">:</span
+              ><span class="pto-val pto-green">● open</span>
+            </div>
+          </div>
         </div>
       </div>
+
       <a href="#about" class="hero-scroll-hint" aria-label="Scroll down">
         <span>scroll</span>
         <div class="scroll-line"></div>
       </a>
     </section>
 
-    <!-- ─── ABOUT ─────────────────────────────────────── -->
+    <!-- ABOUT -->
     <section class="section" id="about">
       <div class="container">
         <div class="section-header" data-reveal>
           <span class="section-num">01</span>
           <h2 class="section-title">About me</h2>
+          <span class="section-cmd">// cat about.txt</span>
         </div>
         <div class="about-grid">
           <div class="about-bio" data-reveal>
@@ -154,8 +249,6 @@
                 >
               </div>
             </div>
-
-            <!-- ─── PERSONAL INTERESTS ─── -->
             <div class="interests-row" data-reveal>
               <div class="interest-chip">
                 <span class="interest-icon">📖</span>
@@ -187,9 +280,21 @@
                   <span class="interest-val">AI & Vibe Coding</span>
                 </div>
               </div>
+              <a
+                href="https://www.chess.com/member/supercotti"
+                target="_blank"
+                rel="noopener"
+                class="interest-chip interest-chip-link"
+              >
+                <span class="interest-icon">♟️</span>
+                <div class="interest-text">
+                  <span class="interest-label">Chess.com</span>
+                  <span class="interest-val interest-val-link"
+                    >supercotti ↗</span
+                  >
+                </div>
+              </a>
             </div>
-
-            <!-- ─── STOIC QUOTE ─── -->
             <div class="stoic-quote" data-reveal>
               <span class="stoic-mark">"</span>
               <p class="stoic-text">
@@ -199,7 +304,6 @@
               <span class="stoic-attr">— Marcus Aurelius, Meditations</span>
             </div>
           </div>
-
           <div class="about-stats" data-reveal>
             <div class="stat-card">
               <div class="stat-icon">🏆</div>
@@ -223,7 +327,7 @@
                 Currently studying Harvard's CS50P & CS50x
               </div>
             </div>
-            <div class="stat-card stat-card-wide">
+            <div class="stat-card">
               <div class="stat-icon">🤖</div>
               <div class="stat-value">AI+</div>
               <div class="stat-label">
@@ -240,12 +344,13 @@
       </div>
     </section>
 
-    <!-- ─── SKILLS ─────────────────────────────────────── -->
+    <!-- SKILLS -->
     <section class="section section-dark" id="skills">
       <div class="container">
         <div class="section-header" data-reveal>
           <span class="section-num">02</span>
           <h2 class="section-title">Skills</h2>
+          <span class="section-cmd">// ls -la skills/</span>
         </div>
         <div class="skills-grid" data-reveal>
           <div class="skill-item">
@@ -358,12 +463,217 @@
       </div>
     </section>
 
-    <!-- ─── EXPERIENCE ─────────────────────────────────── -->
-    <section class="section" id="experience">
+    <!-- PROJECTS -->
+    <section class="section" id="projects">
       <div class="container">
         <div class="section-header" data-reveal>
           <span class="section-num">03</span>
+          <h2 class="section-title">Projects</h2>
+          <span class="section-cmd">// find ./projects -name "*.shipped"</span>
+        </div>
+        <div class="projects-grid">
+          <div class="project-card" data-reveal>
+            <div class="project-header">
+              <div class="project-dots">
+                <span class="pd pd-r"></span><span class="pd pd-y"></span
+                ><span class="pd pd-g"></span>
+              </div>
+              <span class="project-file">QuizyMath/main.py</span>
+              <div class="project-badges">
+                <span class="proj-badge badge-live">● public</span>
+              </div>
+            </div>
+            <div class="project-body">
+              <div class="project-prompt">
+                <span class="pp-dollar">$</span
+                ><span class="pp-cmd">python main.py --difficulty hard</span>
+              </div>
+              <h3 class="project-title">QuizyMath</h3>
+              <p class="project-desc">
+                A fun, interactive Python quiz game with randomly generated math
+                problems across difficulty levels. Tracks your score and gives
+                instant feedback on every answer.
+              </p>
+              <div class="project-meta">
+                <span class="project-lang"
+                  ><span class="lang-dot" style="background: #3572a5"></span
+                  >Python</span
+                >
+                <span class="project-lang"
+                  ><span class="lang-dot" style="background: #444"></span
+                  >CLI</span
+                >
+              </div>
+            </div>
+            <div class="project-footer">
+              <a
+                href="https://github.com/cottidev/QuizyMath"
+                target="_blank"
+                rel="noopener"
+                class="proj-link"
+                >$ open github →</a
+              >
+            </div>
+          </div>
+
+          <div class="project-card" data-reveal>
+            <div class="project-header">
+              <div class="project-dots">
+                <span class="pd pd-r"></span><span class="pd pd-y"></span
+                ><span class="pd pd-g"></span>
+              </div>
+              <span class="project-file">CDS/index.html</span>
+              <div class="project-badges">
+                <span class="proj-badge badge-live">● live</span>
+              </div>
+            </div>
+            <div class="project-body">
+              <div class="project-prompt">
+                <span class="pp-dollar">$</span
+                ><span class="pp-cmd">serve --open cds/</span>
+              </div>
+              <h3 class="project-title">Club des Sciences</h3>
+              <p class="project-desc">
+                Official website for the Science Club at Lycée Abou Hayane
+                Tawhidi, Bouskoura. Presents the club, activity poles, team, and
+                student enrollment — built as president.
+              </p>
+              <div class="project-meta">
+                <span class="project-lang"
+                  ><span class="lang-dot" style="background: #e34c26"></span
+                  >HTML</span
+                >
+                <span class="project-lang"
+                  ><span class="lang-dot" style="background: #264de4"></span
+                  >CSS</span
+                >
+                <span class="project-lang"
+                  ><span class="lang-dot" style="background: #f0db4f"></span
+                  >JS</span
+                >
+              </div>
+            </div>
+            <div class="project-footer">
+              <a
+                href="https://clubdessciences.pages.dev/"
+                target="_blank"
+                rel="noopener"
+                class="proj-link"
+                >$ open site →</a
+              >
+              <a
+                href="https://github.com/cottidev/CDS"
+                target="_blank"
+                rel="noopener"
+                class="proj-link proj-link-muted"
+                >github →</a
+              >
+            </div>
+          </div>
+
+          <div class="project-card" data-reveal>
+            <div class="project-header">
+              <div class="project-dots">
+                <span class="pd pd-r"></span><span class="pd pd-y"></span
+                ><span class="pd pd-g"></span>
+              </div>
+              <span class="project-file">flappy_fish.gd</span>
+              <div class="project-badges">
+                <span class="proj-badge badge-win">🏆 1st Place</span>
+              </div>
+            </div>
+            <div class="project-body">
+              <div class="project-prompt">
+                <span class="pp-dollar">$</span
+                ><span class="pp-cmd">godot --run flappy_fish</span>
+              </div>
+              <h3 class="project-title">Flappy Fish</h3>
+              <p class="project-desc">
+                A Flappy Bird–inspired game built in Godot Engine over one
+                hackathon weekend. Shipped under pressure, played by judges, won
+                1st place at Hack Club × École Centrale.
+              </p>
+              <div class="project-meta">
+                <span class="project-lang"
+                  ><span class="lang-dot" style="background: #478cbf"></span
+                  >GDScript</span
+                >
+                <span class="project-lang"
+                  ><span class="lang-dot" style="background: #2874cc"></span
+                  >Godot 4</span
+                >
+              </div>
+            </div>
+            <div class="project-footer">
+              <a
+                href="https://cottidev.itch.io"
+                target="_blank"
+                rel="noopener"
+                class="proj-link"
+                >$ open itch.io →</a
+              >
+            </div>
+          </div>
+
+          <div class="project-card" data-reveal>
+            <div class="project-header">
+              <div class="project-dots">
+                <span class="pd pd-r"></span><span class="pd pd-y"></span
+                ><span class="pd pd-g"></span>
+              </div>
+              <span class="project-file">aymaneberhoua/index.html</span>
+              <div class="project-badges">
+                <span class="proj-badge badge-live">● you're here</span>
+              </div>
+            </div>
+            <div class="project-body">
+              <div class="project-prompt">
+                <span class="pp-dollar">$</span
+                ><span class="pp-cmd">serve --open portfolio/</span>
+              </div>
+              <h3 class="project-title">This Portfolio</h3>
+              <p class="project-desc">
+                Designed and built from scratch — custom cursor, floating
+                squares, boot screen, scroll reveals, terminal aesthetic,
+                mobile-responsive. You're looking at it right now.
+              </p>
+              <div class="project-meta">
+                <span class="project-lang"
+                  ><span class="lang-dot" style="background: #e34c26"></span
+                  >HTML</span
+                >
+                <span class="project-lang"
+                  ><span class="lang-dot" style="background: #264de4"></span
+                  >CSS</span
+                >
+                <span class="project-lang"
+                  ><span class="lang-dot" style="background: #f0db4f"></span
+                  >JS</span
+                >
+              </div>
+            </div>
+            <div class="project-footer">
+              <a
+                href="https://github.com/cottidev/aymaneberhoua"
+                target="_blank"
+                rel="noopener"
+                class="proj-link"
+                >$ open github →</a
+              >
+              <span class="proj-link proj-link-muted">you're here _</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section class="section section-dark" id="experience">
+      <div class="container">
+        <div class="section-header" data-reveal>
+          <span class="section-num">04</span>
           <h2 class="section-title">Experience</h2>
+          <span class="section-cmd">// git log --oneline</span>
         </div>
         <div class="timeline">
           <div class="timeline-item" data-reveal>
@@ -381,9 +691,9 @@
                 public presentation.
               </p>
               <div class="timeline-tags">
-                <span class="tag">Student Leadership</span>
-                <span class="tag">Team Management</span>
-                <span class="tag">STEM Projects</span>
+                <span class="tag">Student Leadership</span
+                ><span class="tag">Team Management</span
+                ><span class="tag">STEM Projects</span>
               </div>
             </div>
           </div>
@@ -401,10 +711,10 @@
                 shipped a fully playable game, and took home the top prize.
               </p>
               <div class="timeline-tags">
-                <span class="tag">Godot Engine</span>
-                <span class="tag">Game Dev</span>
-                <span class="tag">Hack Club</span>
-                <span class="tag">Teamwork</span>
+                <span class="tag">Godot Engine</span
+                ><span class="tag">Game Dev</span
+                ><span class="tag">Hack Club</span
+                ><span class="tag">Teamwork</span>
               </div>
             </div>
           </div>
@@ -420,10 +730,9 @@
                 and CS50x outside of school hours.
               </p>
               <div class="timeline-tags">
-                <span class="tag">Mathematics</span>
-                <span class="tag">Physics</span>
-                <span class="tag">CS50P</span>
-                <span class="tag">CS50x</span>
+                <span class="tag">Mathematics</span
+                ><span class="tag">Physics</span><span class="tag">CS50P</span
+                ><span class="tag">CS50x</span>
               </div>
             </div>
           </div>
@@ -444,9 +753,9 @@
                 representing the Casablanca region.
               </p>
               <div class="timeline-tags">
-                <span class="tag">Python</span>
-                <span class="tag">Algorithms</span>
-                <span class="tag">Competition</span>
+                <span class="tag">Python</span
+                ><span class="tag">Algorithms</span
+                ><span class="tag">Competition</span>
               </div>
             </div>
           </div>
@@ -454,12 +763,13 @@
       </div>
     </section>
 
-    <!-- ─── ACHIEVEMENTS ──────────────────────────────── -->
-    <section class="section section-dark" id="achievements">
+    <!-- ACHIEVEMENTS -->
+    <section class="section" id="achievements">
       <div class="container">
         <div class="section-header" data-reveal>
-          <span class="section-num">04</span>
-          <h2 class="section-title">Achievements & Certifications</h2>
+          <span class="section-num">05</span>
+          <h2 class="section-title">Achievements &amp; Certifications</h2>
+          <span class="section-cmd">// cat awards.log</span>
         </div>
         <div class="ach-grid">
           <div class="ach-card ach-featured" data-reveal>
@@ -566,12 +876,13 @@
       </div>
     </section>
 
-    <!-- ─── GALLERY ───────────────────────────────────── -->
-    <section class="section" id="gallery">
+    <!-- GALLERY -->
+    <section class="section section-dark" id="gallery">
       <div class="container">
         <div class="section-header" data-reveal>
-          <span class="section-num">05</span>
+          <span class="section-num">06</span>
           <h2 class="section-title">Gallery</h2>
+          <span class="section-cmd">// ls -la ./gallery/</span>
         </div>
         <div class="gallery-sub-label" data-reveal>
           <span class="gallery-sub-tag"
@@ -660,26 +971,31 @@
       </div>
     </section>
 
-    <!-- ─── CONNECT ───────────────────────────────────── -->
+    <!-- CONNECT -->
     <section class="section connect-section" id="connect">
       <div class="container">
         <div class="connect-layout" data-reveal>
           <div class="connect-inner">
-            <span class="section-num">06</span>
+            <span class="section-num">07</span>
             <h2 class="connect-headline">
-              Let's build<br />
-              <span class="connect-blue">something</span><br />
-              together.
+              Let's build<br /><span class="connect-blue">something</span
+              ><br />together.
             </h2>
             <p class="connect-sub">
               I'm always open to connecting with fellow builders, mentors, and
               curious minds. Drop me a message.
             </p>
             <a
-              href="mailto:aymane.berhoua@gmail.com"
+              href="/cdn-cgi/l/email-protection#5a3b23373b343f74383f2832352f3b1a3d373b333674393537"
               class="btn btn-primary btn-lg"
-              >aymane.berhoua@gmail.com</a
             >
+              <span class="btn-prompt">$</span>
+              <span
+                class="__cf_email__"
+                data-cfemail="2140584c404f440f434453494e544061464c40484d0f424e4c"
+                >[email&#160;protected]</span
+              >
+            </a>
             <div class="connect-socials">
               <a
                 href="https://www.linkedin.com/in/aymaneberhoua/"
@@ -720,57 +1036,59 @@
                 <div class="t-dot t-dot-r"></div>
                 <div class="t-dot t-dot-y"></div>
                 <div class="t-dot t-dot-g"></div>
+                <span class="t-title">terminal — aymane@casablanca</span>
               </div>
               <div class="t-line">
-                <span class="t-prompt">~ $</span>
-                <span class="t-cmd">whoami</span>
+                <span class="t-prompt">~ $</span
+                ><span class="t-cmd"> whoami</span>
               </div>
               <div class="t-line">
                 <span class="t-out">aymane_berhoua</span>
               </div>
               <div class="t-line">&nbsp;</div>
               <div class="t-line">
-                <span class="t-prompt">~ $</span>
-                <span class="t-cmd">cat profile.json</span>
+                <span class="t-prompt">~ $</span
+                ><span class="t-cmd"> cat profile.json</span>
               </div>
               <div class="t-line"><span class="t-dim">{</span></div>
               <div class="t-line">
-                &nbsp; <span class="t-dim">"role":</span>
+                &nbsp;&nbsp;<span class="t-dim">"role":</span>
                 <span class="t-str">"developer_in_progress"</span
                 ><span class="t-dim">,</span>
               </div>
               <div class="t-line">
-                &nbsp; <span class="t-dim">"location":</span>
+                &nbsp;&nbsp;<span class="t-dim">"location":</span>
                 <span class="t-str">"casablanca_ma"</span
                 ><span class="t-dim">,</span>
               </div>
               <div class="t-line">
-                &nbsp; <span class="t-dim">"goal":</span>
+                &nbsp;&nbsp;<span class="t-dim">"goal":</span>
                 <span class="t-str">"software_engineer"</span
                 ><span class="t-dim">,</span>
               </div>
               <div class="t-line">
-                &nbsp; <span class="t-dim">"book":</span>
-                <span class="t-str">"meditations_marcus_aurelius"</span
+                &nbsp;&nbsp;<span class="t-dim">"book":</span>
+                <span class="t-str">"meditations"</span
                 ><span class="t-dim">,</span>
               </div>
               <div class="t-line">
-                &nbsp; <span class="t-dim">"philosophy":</span>
+                &nbsp;&nbsp;<span class="t-dim">"philosophy":</span>
                 <span class="t-str">"stoicism"</span
                 ><span class="t-dim">,</span>
               </div>
               <div class="t-line">
-                &nbsp; <span class="t-dim">"rubiks_cube":</span>
+                &nbsp;&nbsp;<span class="t-dim">"rubiks_cube":</span>
                 <span class="t-out">"&lt;60s"</span><span class="t-dim">,</span>
               </div>
               <div class="t-line">
-                &nbsp; <span class="t-dim">"status":</span>
+                &nbsp;&nbsp;<span class="t-dim">"status":</span>
                 <span class="t-out">"open_to_opportunities"</span>
               </div>
               <div class="t-line"><span class="t-dim">}</span></div>
               <div class="t-line">&nbsp;</div>
               <div class="t-line">
-                <span class="t-prompt">~ $</span> <span class="t-cmd">_</span>
+                <span class="t-prompt">~ $</span>
+                <span class="t-cmd t-blink">_</span>
               </div>
             </div>
             <div class="connect-stat-row">
@@ -793,10 +1111,64 @@
             </div>
           </div>
         </div>
+
+        <!-- INTERACTIVE TERMINAL WIDGET -->
+        <div
+          class="terminal-widget"
+          data-reveal
+          aria-label="Interactive terminal — try me"
+        >
+          <div class="terminal-widget-header">
+            <div class="tw-dots">
+              <div class="tw-dot tw-dot-r"></div>
+              <div class="tw-dot tw-dot-y"></div>
+              <div class="tw-dot tw-dot-g"></div>
+            </div>
+            <span class="terminal-widget-title"
+              >try me · aymane@casablanca:~$</span
+            >
+            <div class="terminal-widget-ping" title="online"></div>
+          </div>
+          <div
+            class="term-output-area"
+            id="term-output"
+            aria-live="polite"
+          ></div>
+          <div class="term-chips" role="toolbar" aria-label="Quick commands">
+            <button class="term-chip" data-cmd="about">about</button>
+            <button class="term-chip" data-cmd="skills">skills</button>
+            <button class="term-chip" data-cmd="projects">projects</button>
+            <button class="term-chip" data-cmd="achievements">
+              achievements
+            </button>
+            <button class="term-chip" data-cmd="contact">contact</button>
+            <button class="term-chip" data-cmd="philosophy">philosophy</button>
+            <button class="term-chip" data-cmd="chess">chess</button>
+            <button class="term-chip" data-cmd="help">help</button>
+          </div>
+          <div class="term-input-row">
+            <span class="term-input-prompt">~&nbsp;$</span>
+            <form id="term-form" autocomplete="off">
+              <input
+                id="term-input"
+                type="text"
+                placeholder="type a command or click a chip above..."
+                spellcheck="false"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+                aria-label="Terminal input"
+              />
+            </form>
+            <button type="submit" form="term-form" class="term-submit-btn">
+              ↵ run
+            </button>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- ─── FOOTER ────────────────────────────────────── -->
+    <!-- FOOTER -->
     <footer class="footer">
       <div class="container footer-inner">
         <span class="footer-logo"
