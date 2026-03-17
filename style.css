@@ -94,10 +94,14 @@
   background: #e4eaf8;
 }
 [data-theme="light"] .nav {
-  background: rgba(240, 244, 252, 0.95);
+  background: #f0f4fc;
+  border-bottom-color: rgba(26, 94, 204, 0.1);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 [data-theme="light"] .nav.scrolled {
-  background: rgba(240, 244, 252, 0.99);
+  background: #f0f4fc;
+  border-bottom-color: rgba(26, 94, 204, 0.15);
 }
 [data-theme="light"] .syslog-bar {
   background: rgba(240, 244, 252, 0.98);
@@ -153,29 +157,25 @@
   border-color: rgba(74, 158, 255, 0.25);
 }
 
-/* ─── LIGHT THEME: MOBILE NAV (FIX) ─────────── */
-/* Mobile hamburger menu panel */
+/* ─── LIGHT THEME: NAV ───────────────────────── */
+/* Desktop: transparent so it blends with the nav bar */
 [data-theme="light"] .nav-menu {
-  background: #f0f4fc;
-  border-left-color: rgba(26, 94, 204, 0.2);
-  box-shadow: -8px 0 40px rgba(0, 0, 0, 0.12);
+  background: transparent;
+  box-shadow: none;
+  border-left-color: transparent;
 }
-/* Hamburger icon lines */
 [data-theme="light"] .nav-toggle span {
   background: var(--text);
 }
-/* Backdrop overlay */
 [data-theme="light"] .nav-backdrop {
   background: rgba(150, 170, 210, 0.55);
 }
-/* Nav links inside drawer */
 [data-theme="light"] .nav-menu .nav-link {
   color: var(--text) !important;
 }
 [data-theme="light"] .nav-menu .nav-link:hover {
   color: var(--accent) !important;
 }
-/* CTA button inside drawer */
 [data-theme="light"] .nav-menu .nav-cta {
   color: var(--accent) !important;
   border-color: var(--border2);
@@ -186,7 +186,6 @@
   color: #fff !important;
   border-color: var(--accent);
 }
-/* Theme toggle button */
 [data-theme="light"] .theme-toggle-btn {
   color: var(--text-muted);
   border-color: var(--border2);
@@ -196,6 +195,14 @@
   background: rgba(26, 94, 204, 0.1);
   color: var(--accent);
   border-color: var(--accent);
+}
+/* Mobile: drawer needs its own solid background */
+@media (max-width: 768px) {
+  [data-theme="light"] .nav-menu {
+    background: #f0f4fc;
+    border-left-color: rgba(26, 94, 204, 0.2);
+    box-shadow: -8px 0 40px rgba(0, 0, 0, 0.12);
+  }
 }
 
 /* smooth theme transitions */
@@ -221,7 +228,6 @@ body,
     color var(--transition);
 }
 
-/* Smooth nav-menu background transition for theme switch */
 .nav-menu {
   transition:
     transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
@@ -756,14 +762,6 @@ h4 {
     transform: translateX(0);
   }
 }
-@keyframes scanMove {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: 0 100px;
-  }
-}
 @keyframes scrollAnim {
   0%,
   100% {
@@ -886,6 +884,7 @@ h4 {
   display: flex;
   align-items: center;
   gap: 2.25rem;
+  background: transparent;
 }
 .nav-link {
   font-family: var(--mono);
@@ -935,7 +934,6 @@ h4 {
   border-color: var(--accent);
 }
 
-/* nav-actions groups toggle + cta */
 .nav-actions {
   display: flex;
   align-items: center;
@@ -2244,7 +2242,6 @@ h4 {
   white-space: pre-wrap;
 }
 
-/* terminal colour helpers */
 .t-accent {
   color: var(--accent-light);
 }
@@ -2466,9 +2463,6 @@ h4 {
     gap: 0.75rem;
     margin-top: 0.5rem;
   }
-
-  /* Light mode override for mobile nav menu */
-  /* (applied via [data-theme="light"] .nav-menu above) */
 
   .hero {
     grid-template-columns: 1fr;
