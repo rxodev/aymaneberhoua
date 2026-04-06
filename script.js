@@ -86,6 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 roleEl.classList.add("visible");
                 const roles = [
                   "hackathon_winner",
+                  "aspiring_polymath",
                   "python_developer",
                   "cs50_student",
                   "game_dev_enthusiast",
@@ -118,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
               }
 
               // fade in rest of hero
-              ["hero-desc", "hero-actions", "hero-code"].forEach((cls, i) => {
+              ["hero-desc", "hero-actions"].forEach((cls, i) => {
                 setTimeout(() => {
                   document.querySelector("." + cls)?.classList.add("visible");
                 }, i * 120);
