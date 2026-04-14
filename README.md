@@ -25,5 +25,5 @@ Pure HTML, CSS, and vanilla JavaScript. No frameworks, no build step, no depende
 ## Contact
 
 - LinkedIn: [linkedin.com/in/aymaneberhoua](https://www.linkedin.com/in/aymaneberhoua/)
-- GitHub: [github.com/cottidev](https://github.com/cottidev)
+- GitHub: [github.com/cottidev](https://github.com/rxodev)
 - Discord: [discordapp.com/users/1100540512659832842](https://discordapp.com/users/1100540512659832842)
